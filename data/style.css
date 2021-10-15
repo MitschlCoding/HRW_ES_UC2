@@ -1,0 +1,108 @@
+body{
+    background: #181818;
+    margin: 0px;
+    color: lightblue;
+    font-family: "Lucida Console";
+    }
+#liveVideo{
+    border-radius: 20px;
+    overflow: hidden;
+    border: solid 8px steelblue;
+    margin: 5px;
+    }
+#snapShotCanvas{
+    border-radius: 20px;
+    overflow: hidden;
+    border: solid 8px steelblue;
+    margin: 5px;
+    }
+.navigation{
+    background-color: #121212;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    }
+.options{
+    display: block;
+    justify-content: center;
+    align-content: center;
+    margin: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    }
+.videoContent{
+    display: block;
+    justify-content: center;
+    align-content: center;
+    margin: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    }
+.informationContent{
+    display: block;
+    justify-content: center;
+    align-content: center;
+    margin: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width: 30%;
+    }
+.centered{
+    display : flex;
+    justify-content : center;
+    align-content : center;
+      text-align: justify;
+    }
+.button{
+    border-radius: 0px;
+    border: 2px solid lightblue;
+    padding: 3px;
+    cursor: pointer;
+    font-family: "Lucida Console";
+    background-color: steelblue;
+     text-align: center;
+    color: white;
+    transition-duration: 0.4s;
+    }
+.button:hover{
+    background-color: slateblue;
+    }
+.content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    }
+.textJustified{
+    text-align: justify;
+    }
+.dropDownButton{
+    background-color: transparent;
+    font-family: "Lucida Console";
+    padding: 16 px;
+    color: steelblue;
+    font-size: 32px;
+    border: none;
+    }
+.dropdown {
+      position: relative;
+    font-family: "Lucida Console";
+      display: inline-block;
+    }
+.dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: lightblue;
+    border: solid 5px steelblue;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    }
+.dropdown-content a:hover {background-color: #ddd;}
+.dropdown:hover .dropdown-content {display: block;}
