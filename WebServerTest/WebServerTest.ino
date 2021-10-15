@@ -11,6 +11,7 @@
 //System for IODevices
 #include "IOController.h"
 #include "LED.h"
+#include "Motor.h"
 
 using namespace httpsserver;
 
@@ -23,7 +24,7 @@ SSLCert* cert;
 HTTPSServer* secureServer;
 
 //initialise the IOController
-sc2::IOController* ioContrTest;
+uc2::IOController* ioContrTest;
 
 void setup(){
   //test if file system works
@@ -86,7 +87,7 @@ void setup(){
     req->readChars(buff, bodyLength);
     int pin;
     pin = atoi(buff);
-    ioContrTest->addODevice(new sc2::LED(pin));
+    ioContrTest->addODevice(new uc2::LED(pin));
     //TODO!!! change it so that only the added device initialisation is run
     ioContrTest->controllerInit();
     delete buff;
@@ -99,7 +100,7 @@ void setup(){
     req->readChars(buff, bodyLength);
     int state;
     state = atoi(buff);
-    ((sc2::LED*)ioContrTest->oDevices.back())->turnOn(state);
+    ((uc2::LED*)ioContrTest->oDevices.back())->turnOn(state);
   });
 
   //initialise node for server, start the server and test if its running
@@ -114,11 +115,11 @@ void setup(){
   }
 
   //initialises the IOController
-  ioContrTest = new sc2::IOController();
-  //adds a LED to the device list
-  //ioContrTest->addODevice(new sc2::LED(2));
+  ioContrTest = new uc2::IOController();
+  //adds a Motor to the device list
+  ioContrTest->addODevice(new uc2::Motor(2,15,13,12));
   //runs the initialise methods of LED
-  //ioContrTest->controllerInit();
+  ioContrTest->controllerInit();
 }
 
 void loop(){

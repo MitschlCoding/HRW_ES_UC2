@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 //an output device, that turns an LED permanently on
-namespace sc2{
+namespace uc2{
   class LED: public ODevice{
     public:
       LED();

@@ -5,7 +5,7 @@
 
 //This controller handles all I/O Devices and handels the adding/removing of devices and their updating
 //has a list of devices that can be added to
-namespace sc2{
+namespace uc2{
   class IOController{
     public:
       IOController();

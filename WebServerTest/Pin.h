@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 //represents an pin for the ESP
-namespace sc2{
+namespace uc2{
   class Pin{
     public:
       //constructs a Pin with a pinNum(number of IO on ESP) and output(weither the pin is an output)

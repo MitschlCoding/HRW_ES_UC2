@@ -3,7 +3,7 @@
 
 //represents a ODevice
 
-namespace sc2{
+namespace uc2{
   class ODevice {
     public:
       //numOfPins is the number of pins the device needs
