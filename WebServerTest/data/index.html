@@ -5,65 +5,94 @@
 		<title>Microscope</title>
 		<link rel="stylesheet" href="style.css">
 	</head>
-<body>
-	<div class="container">
-		<div class="navigation">
-			<div class="centered">
-				<p><h1>Microscope Test</h1></p>
+	<body>
+		<!--This is the popup that lets the upser add a device-->
+		<div class="addPopup" id="addPopup">
+			<div class="popupHeader">
+				<p><h2>Add Device</h2></p>
+				<button data-close-button class="button" id="closePopup">&times;</button>
 			</div>
-			<div class="dropdown">
-				<button class="dropDownButton">ProjektGruppen</button>
-				<div class="dropdown-content">
-				  <a href="https://www.uni-jena.de/201125_uc2" target="_blank">Uni-Jena</a>
-				  <a href="http://fablab.hochschule-ruhr-west.de/content/index_ger.html" target="_blank">FabLab</a>
-				</div>
-			  </div> 
-		</div>
-		<div class="content">
-			<div class="options">
+			<div class="popupBody">
 				<div class="centered">
-					<h2>Controls</h2>
+					<div class="addDevice">
+						<select id="selectDevice" onchange="displayPinInputs()">
+							<option value="" selected hidden disabled>Device</option>
+							<option value="LED">LED</option>
+							<option value="Motor">Motor</option>
+						</select>
+					</div>
 				</div>
-				<div>
+				<div class="centered" id="devicePins">
+					
+				</div>
+				<div class="buttonDiv">
 					<div class="centered">
-						<button id="addLED" class="button" onclick="addLED()">Add LED</button>
-						<input id="pinNumberLED" type="number" min="0" max="39">
-					</div>
-					<div class="centered">
-						<button id="turnLEDOn" class="button" onclick="turnLEDOn()">Turn LED on (1 for on 0 for off)</button>
-						<input id="turnLEDOnState" type="number" min="0" max="1">
-					</div>
-				</div>
-			</div>
-			<div class="videoContent">
-				<div class="centered">
-					<h2>Video</h2>
-				</div>
-				<div class="centered">
-					<video autoplay="true" id='liveVideo'>Problem Loading your Webcam</video>
-				</div>
-				<div class="centered">
-					<div class="buttonDiv">
-						<button id="snap" class="button" onclick="snap()">Take Screenshot</button>
-					</div>
-				</div>
-				<div class="centered">
-					<canvas id="snapShotCanvas"></canvas>
-				</div>
-			</div>
-			<div class="informationContent">
-				<div class="textJustified">
-					<div>
-						<p><h2>Information</h2></p>
-					</div>
-					<div>
-						<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,</p>
+						<button class="button" id="addDevice" onClick="addDevice()">Add Device</button>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	
-	<script src="index.js"></script>
-</body>
+		<div id="popupOverlay"></div>
+
+		<!--Main Page-->
+		<div class="mainPage">
+			<!--navigation Header-->
+			<div class="navigation">
+				<div class="centered">
+					<p><h1>Microscope Test</h1></p>
+				</div>
+				<div class="dropdown">
+					<button class="dropDownButton">ProjektGruppen</button>
+					<div class="dropdown-content">
+					<a href="https://www.uni-jena.de/201125_uc2" target="_blank">Uni-Jena</a>
+					<a href="http://fablab.hochschule-ruhr-west.de/content/index_ger.html" target="_blank">FabLab</a>
+					</div>
+				</div> 
+			</div>
+			<!--Body of the main page-->
+			<div class="content">
+				<!--Controlls and Options for devices-->
+				<div class="options">
+					<div class="centered">
+						<h2>Controlls</h2>
+					</div>
+					<div>
+						<div class="centered">
+							<button class="button" data-popup-target="#addPopup">Add Device</button>
+						</div>
+					</div>
+				</div>
+				<!--Video and Screenshots-->
+				<div class="videoContent">
+					<div class="centered">
+						<h2>Video</h2>
+					</div>
+					<div class="centered">
+						<video autoplay="true" id='liveVideo'>Problem Loading your Webcam</video>
+					</div>
+					<div class="centered">
+						<div class="buttonDiv">
+							<button id="snap" class="button" onclick="snap()">Take Screenshot</button>
+						</div>
+					</div>
+					<div class="centered">
+						<canvas id="snapShotCanvas"></canvas>
+					</div>
+				</div>
+				<!--some information on the projekt-->
+				<div class="informationContent">
+					<div class="textJustified">
+						<div>
+							<p><h2>Information</h2></p>
+						</div>
+						<div>
+							<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="index.js"></script>
+	</body>
 </html>

@@ -29,6 +29,7 @@ body{
     margin: 20px;
     margin-top: 0px;
     margin-bottom: 0px;
+    width: 30%;
     }
 .videoContent{
     display: block;
@@ -45,14 +46,20 @@ body{
     margin: 20px;
     margin-top: 0px;
     margin-bottom: 0px;
-    width: 30%;
+    width: 20%;
     }
 .centered{
     display : flex;
     justify-content : center;
     align-content : center;
-      text-align: justify;
+    text-align: justify;
+    margin: 10px;
     }
+.block{
+    display:block;
+    width: 100%;
+    margin: 10px;
+}
 .button{
     border-radius: 0px;
     border: 2px solid lightblue;
@@ -76,6 +83,7 @@ body{
 .textJustified{
     text-align: justify;
     }
+
 .dropDownButton{
     background-color: transparent;
     font-family: "Lucida Console";
@@ -106,3 +114,48 @@ body{
     }
 .dropdown-content a:hover {background-color: #ddd;}
 .dropdown:hover .dropdown-content {display: block;}
+
+.addPopup{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 200 ease-in-out;
+    border: solid 2px steelblue;
+    background-color: #181818;
+    color: lightblue;
+    z-index: 10;
+    width: 500px;
+    max-width: 50%;
+}
+.addPopup.active{
+    transform: translate(-50%, -50%) scale(1);
+}
+.popupHeader{
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 2px steelblue;
+    background-color: #121212
+}
+.popupBody{
+    padding: 10px;
+    display: block;
+    align-items: center;
+}
+#popupOverlay{
+    position: fixed;
+    opacity: 0;
+    transition: 200ms ease-in-out;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    pointer-events: none;
+}
+#popupOverlay.active{
+    pointer-events: all;
+    opacity: 1;
+}
