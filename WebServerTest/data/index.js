@@ -10,32 +10,33 @@ let w, h, ratio;
 let position = 0;
 let focus = 0;
 
-//popup
+//popup variables
 const openPopupButtons = document.querySelectorAll("[data-popup-target]");
 const closePopupButtons = document.querySelectorAll("[data-close-button]");
 const overlay= document.getElementById('popupOverlay');
 
 //popup event listeners
+//listen to all open buttons
 openPopupButtons.forEach(button => {
 	button.addEventListener("click", () => {
 		const popup = document.querySelector(button.dataset.popupTarget);
 		openPopup(popup);
 	})
 })
-
+//listen to all close buttons
 closePopupButtons.forEach(button => {
 	button.addEventListener("click", () => {
 		const popup = button.closest(".addPopup");
 		closePopup(popup);
 	})
 })
-
+//open a popup window
 function openPopup(popup){
 	if(popup == null) return;
 	popup.classList.add("active");
 	overlay.classList.add("active");
 }
-
+//close a popup window
 function closePopup(popup){
 	if(popup == null) return;
 	popup.classList.remove("active");
