@@ -7,7 +7,7 @@ namespace uc2{
   class ODevice {
     public:
       //numOfPins is the number of pins the device needs
-      ODevice(char _numOfPins);
+      ODevice(int _id, char _numOfPins);
       ~ODevice();
       //initialisation and update of Device that is defined in the child classes
       //init is supposed to run only once, when the device is added to the list of devices or after the post request is made
@@ -18,6 +18,8 @@ namespace uc2{
       void setPin(char _pinIndex, Pin _pin);
       //return the pin at pinIndex, if the index is out of bounce, the last item in array is returned
       Pin* getPin(char _pinIndex);
+      //the id of the Device for identification
+      int id;
     private:
       char numOfPins;
       Pin* pins;

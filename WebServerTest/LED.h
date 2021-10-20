@@ -8,9 +8,9 @@ namespace uc2{
   class LED: public ODevice{
     public:
       LED();
-      LED(char _pinNum);
+      LED(int _id, char _pinNum);
       //turns the LED on or of
-      void turnOn(bool _state);
+      void turnOnOff();
       //initialises the LED and set the given pins to be output pins
       void deviceInit();
       //turn the pin state to on and calls pin.update()

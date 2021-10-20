@@ -27,14 +27,14 @@ HTTPSServer* secureServer;
 uc2::IOController* ioContrTest;
 
 void setup(){
+  //setup serial connection
+  Serial.begin(115200);
+  
   //test if file system works
   if(!SPIFFS.begin()){
     Serial.println("Error with SPIFFS");
     return;
   }
-
-  //setup serial connection
-  Serial.begin(115200);
 
   //create a certificate and test if it works
   Serial.println("Create Cert");
@@ -85,9 +85,13 @@ void setup(){
     char* buff = new char[bodyLength+1];
     buff[bodyLength] = '\0';
     req->readChars(buff, bodyLength);
+    int id;
     int pin;
-    pin = atoi(buff);
-    ioContrTest->addODevice(new uc2::LED(pin));
+    id = atoi(buff);
+    char* ptr = strtok(buff, ",");
+    ptr = strtok(NULL, ",");
+    pin = atoi(ptr);
+    ioContrTest->addODevice(new uc2::LED(id, pin));
     //TODO!!! change it so that only the added device initialisation is run
     ioContrTest->controllerInit();
     delete buff;
@@ -98,9 +102,46 @@ void setup(){
     char* buff = new char[bodyLength+1];
     buff[bodyLength] = '\0';
     req->readChars(buff, bodyLength);
-    int state;
-    state = atoi(buff);
-    ((uc2::LED*)ioContrTest->oDevices.back())->turnOn(state);
+    int id;
+    id = atoi(buff);
+    uc2::LED* ledTemp = (uc2::LED*)ioContrTest->getODevice(id);
+    ledTemp->turnOnOff();
+  });
+
+  //resource node, for a POST request, to add a Motor
+  ResourceNode* nodeAddMotor = new ResourceNode("/post/add/Motor", "POST", [](HTTPRequest* req, HTTPResponse* res){
+    size_t bodyLength = req->getContentLength();
+    char* buff = new char[bodyLength+1];
+    buff[bodyLength] = '\0';
+    req->readChars(buff, bodyLength);
+    int id;
+    int* pins = new int[4];
+    //set id
+    id = atoi(buff);
+    //go through all elements in the string with a string token and push them into pins
+    char* ptr = strtok(buff, ",");
+    for(size_t i = 0; i < 4; i++){
+      ptr = strtok(NULL, ",");
+      pins[i] = atoi(ptr);
+    }
+    ioContrTest->addODevice(new uc2::Motor(id, pins[0], pins[1], pins[2], pins[3]));
+    //TODO!!! change it so that only the added device initialisation is run
+    ioContrTest->controllerInit();
+    delete buff;
+    delete pins;
+  });
+
+  ResourceNode* nodeChangeMotorState = new ResourceNode("/post/change/Motor", "POST", [](HTTPRequest* req, HTTPResponse* res){
+    size_t bodyLength = req->getContentLength();
+    char* buff = new char[bodyLength+1];
+    buff[bodyLength] = '\0';
+    req->readChars(buff, bodyLength);
+    char* ptr = strtok(buff, ",");
+    int id = atoi(buff);
+    ptr = strtok(NULL, ",");
+    int _steps = atoi(ptr);
+    uc2::Motor* motorTemp = (uc2::Motor*)ioContrTest->getODevice(id);
+    motorTemp->steps = _steps;
   });
 
   //initialise node for server, start the server and test if its running
@@ -109,6 +150,8 @@ void setup(){
   secureServer->registerNode(nodeJS);
   secureServer->registerNode(nodeAddLED);
   secureServer->registerNode(nodeChangeLEDState);
+  secureServer->registerNode(nodeAddMotor);
+  secureServer->registerNode(nodeChangeMotorState);
   secureServer->start();
   if(secureServer->isRunning()){
     Serial.println("Ready");
@@ -117,7 +160,9 @@ void setup(){
   //initialises the IOController
   ioContrTest = new uc2::IOController();
   //adds a Motor to the device list
-  ioContrTest->addODevice(new uc2::Motor(2,15,13,12));
+  //ioContrTest->addODevice(new uc2::Motor(0, 2, 15, 13, 12));
+  //change the steps to do of motor
+  //((uc2::Motor*)ioContrTest->oDevices.back())->steps = 2048;
   //runs the initialise methods of LED
   ioContrTest->controllerInit();
 }

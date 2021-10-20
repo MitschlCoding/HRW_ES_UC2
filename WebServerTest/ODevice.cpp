@@ -1,6 +1,6 @@
 #include "ODevice.h"
 
-uc2::ODevice::ODevice(char _numOfPins) : numOfPins(_numOfPins){
+uc2::ODevice::ODevice(int _id, char _numOfPins) : id(_id), numOfPins(_numOfPins){
   pins = new Pin[numOfPins];
 }
 

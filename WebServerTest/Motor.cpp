@@ -1,6 +1,6 @@
 #include "Motor.h"
 
-uc2::Motor::Motor(int _pin1, int _pin2, int _pin3, int _pin4) : ODevice(0){
+uc2::Motor::Motor(int _id, int _pin1, int _pin2, int _pin3, int _pin4) : ODevice(_id, 0){
   stepper.connectToPins(_pin1, _pin2, _pin3, _pin4);
 }
 

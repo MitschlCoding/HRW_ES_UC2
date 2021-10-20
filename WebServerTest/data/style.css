@@ -22,7 +22,7 @@ body{
     justify-content: space-evenly;
     align-items: center;
     }
-.options{
+.controlls{
     display: block;
     justify-content: center;
     align-content: center;
@@ -70,6 +70,7 @@ body{
      text-align: center;
     color: white;
     transition-duration: 0.4s;
+    margin: 10px;
     }
 .button:hover{
     background-color: slateblue;

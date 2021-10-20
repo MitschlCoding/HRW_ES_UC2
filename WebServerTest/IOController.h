@@ -11,6 +11,8 @@ namespace uc2{
       IOController();
       //adds a device to the output device list
       void addODevice(ODevice* _oDevice);
+      //returns a pointer to the device with the given id
+      ODevice* getODevice(int _id);
       //calls all initialisation functions from devices in oDevices
       void controllerInit();
       //calls all update functions from devices in oDevices

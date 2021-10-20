@@ -5,7 +5,7 @@
 namespace uc2{
   class Motor: public ODevice{
     public:
-      Motor(int _pin1, int _pin2, int _pin3, int _pin4);
+      Motor(int _id, int _pin1, int _pin2, int _pin3, int _pin4);
       void deviceInit();
       void deviceUpdate();
       int steps = 0;
