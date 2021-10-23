@@ -15,8 +15,7 @@
 
 using namespace httpsserver;
 
-//ssid and passwort for access point (doesn't work for some reason)
-const char* ssid = "ESP32AP";
+const char* ssid = "UC2-Microscope";
 const char* password = "1234567890";
 
 //initialise a sertificate and an https server
@@ -29,7 +28,6 @@ uc2::IOController* ioContrTest;
 void setup(){
   //setup serial connection
   Serial.begin(115200);
-  
   //test if file system works
   if(!SPIFFS.begin()){
     Serial.println("Error with SPIFFS");
