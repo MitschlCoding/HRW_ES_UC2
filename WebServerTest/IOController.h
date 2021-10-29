@@ -13,6 +13,8 @@ namespace uc2{
       void addODevice(ODevice* _oDevice);
       //returns a pointer to the device with the given id
       ODevice* getODevice(int _id);
+      //removes a device
+      void removeODevice(int _id);
       //calls all initialisation functions from devices in oDevices
       void controllerInit();
       //calls all update functions from devices in oDevices

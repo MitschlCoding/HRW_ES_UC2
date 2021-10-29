@@ -156,7 +156,7 @@ void setup(){
 
   //initialises the IOController
   ioContrTest = new uc2::IOController();
-  //runs the initialise methods of LED
+  //runs the initialise methods
   ioContrTest->controllerInit();
 }
 

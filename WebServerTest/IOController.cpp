@@ -14,6 +14,15 @@ uc2::ODevice* uc2::IOController::getODevice(int _id){
   }
 }
 
+void uc2::IOController::removeODevice(int _id){
+  for(auto i: oDevices){
+    if(i->id == _id){
+      oDevices.remove(i);
+      break;
+    }
+  }
+}
+
 void uc2::IOController::controllerInit(){
   for(auto i : oDevices){
     i->deviceInit();
