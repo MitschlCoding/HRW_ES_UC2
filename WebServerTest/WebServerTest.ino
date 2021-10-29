@@ -2,10 +2,9 @@
 #include <HTTPSServer.hpp>
 //provides a way to create certificats
 #include <SSLCert.hpp>
+//work with http requests and response
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
-//String to work with HTTPRequest/HTTPResponse
-#include <String>
 //file system
 #include <SPIFFS.h>
 //System for IODevices
@@ -90,8 +89,8 @@ void setup(){
     ptr = strtok(NULL, ",");
     pin = atoi(ptr);
     ioContrTest->addODevice(new uc2::LED(id, pin));
-    //TODO!!! change it so that only the added device initialisation is run
-    ioContrTest->controllerInit();
+    //init device
+    ioContrTest->getODevice(id)->deviceInit();
     delete buff;
   });
 
@@ -123,8 +122,8 @@ void setup(){
       pins[i] = atoi(ptr);
     }
     ioContrTest->addODevice(new uc2::Motor(id, pins[0], pins[1], pins[2], pins[3]));
-    //TODO!!! change it so that only the added device initialisation is run
-    ioContrTest->controllerInit();
+    //init device
+    ioContrTest->getODevice(id)->deviceInit();
     delete buff;
     delete pins;
   });
@@ -157,10 +156,6 @@ void setup(){
 
   //initialises the IOController
   ioContrTest = new uc2::IOController();
-  //adds a Motor to the device list
-  //ioContrTest->addODevice(new uc2::Motor(0, 2, 15, 13, 12));
-  //change the steps to do of motor
-  //((uc2::Motor*)ioContrTest->oDevices.back())->steps = 2048;
   //runs the initialise methods of LED
   ioContrTest->controllerInit();
 }

@@ -5,7 +5,7 @@ uc2::Motor::Motor(int _id, int _pin1, int _pin2, int _pin3, int _pin4) : ODevice
 }
 
 void uc2::Motor::deviceInit(){
-  stepper.setSpeedInStepsPerSecond(1024);
+  stepper.setSpeedInStepsPerSecond(1024/2);
   stepper.setAccelerationInStepsPerSecondPerSecond(1024/2);
 }
 

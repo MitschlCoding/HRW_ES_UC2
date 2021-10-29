@@ -2,7 +2,7 @@
 let deviceID = 0;
 
 //video constraints
-let constraints = { video: { width: window.outerWidth / 2 }};
+let constraints = { video: { width: window.innerWidth/2 , facingMode:"environment"}};
 let video = document.querySelector('video');
 let canvas = document.querySelector('canvas');
 let context = canvas.getContext('2d');
@@ -52,7 +52,6 @@ navigator.mediaDevices.getUserMedia(constraints)
 			video.play();
 		};
 		//The following 2 lines will change the focus, once we use a device that is capable of doing so
-		//track = mediaStream.getVideoTracks()[0];
 		//track.applyConstraints(advanced: [{focusMode: "manual", focusDistance: "max"}]);
 	})
 	.catch(function (err) {
@@ -70,9 +69,19 @@ video.addEventListener('loadedmetadata', function () {
 	context.fillRect(0, 0, w, h);
 }, false);
 
-//draw image onto canvas on button press
+//draw image onto canvas on button press and saves that image localy
 function snap() {
 	context.drawImage(video, 0, 0, w, h);
+	var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+	downloadImage(dataURL, "microscope.jpeg");
+}
+
+//saves data localy as jpeg
+function downloadImage(data, filename = "untilted.jpeg") {
+	var a = document.createElement("a");
+	a.href = data;
+	a.download = filename;
+	a.click();
 }
 
 //sends a POST request to the server, that adds a LED to the pin in the value box
