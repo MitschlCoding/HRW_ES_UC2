@@ -18,7 +18,8 @@
 						<select id="selectDevice" onchange="displayPinInputs()">
 							<option value="" selected hidden disabled>Device</option>
 							<option value="LED">LED</option>
-							<option value="Motor">Motor</option>
+							<option value="MotorULN2003">MotorULN2003</option>
+							<option value="MotorDRV8825">MotorDRV8825</option>
 						</select>
 					</div>
 				</div>
@@ -89,6 +90,8 @@
 					</div>
 				</div>
 			</div>
+			<video autoplay="true" id="videoFullSize"></video>
+			<canvas id="canvasFullSize"></canvas>
 		</div>
 		
 		<script src="index.js"></script>

@@ -3,10 +3,15 @@ let deviceID = 0;
 
 //video constraints
 let constraints = { video: { width: window.innerWidth/2 , facingMode:"environment"}};
-let video = document.querySelector('video');
+let constraintsFullSize = { video: { width: 1920, facingMode:"environment"}};
+let video = document.getElementById("liveVideo");
+let videoFullSize = document.getElementById('videoFullSize');
 let canvas = document.querySelector('canvas');
+let canvasFullSize = document.getElementById('canvasFullSize');
 let context = canvas.getContext('2d');
+let contextFullSize = canvasFullSize.getContext('2d');
 let w, h, ratio;
+let wFull, hFull, ratioFull;
 let position = 0;
 let focus = 0;
 
@@ -58,21 +63,43 @@ navigator.mediaDevices.getUserMedia(constraints)
 		console.log(err.name + ": " + err.message);
 	});
 
+//push the camera to videoFullSize
+navigator.mediaDevices.getUserMedia(constraintsFullSize)
+	.then(function (mediaStream) {
+		videoFullSize.srcObject = mediaStream;
+		video.onloadedmetadata = function (e) {
+			video.play();
+		};
+	})
+	.catch(function(err) {
+		console.log(err.name + ": " + err.message);
+	});
+
 //when the video is loaded, the canvas is calculated
 video.addEventListener('loadedmetadata', function () {
-	ratio = video.videoWidth / video.videoHeight;
 	w = video.videoWidth;
-	h = parseInt(w / ratio, 10);
+	h = video.videoHeight;
 	canvas.width = w;
 	canvas.height = h;
 	context.fillStyle = "black";
 	context.fillRect(0, 0, w, h);
 }, false);
 
+videoFullSize.addEventListener("loadedmetadata", function() {
+	wFull = videoFullSize.videoWidth;
+	hFull = videoFullSize.videoHeight;
+	canvasFullSize.width =  wFull;
+	canvasFullSize.height = hFull;
+	contextFullSize. fillStyle = "black";
+	context.fillRect(0,0,wFull,hFull);
+})
+
 //draw image onto canvas on button press and saves that image localy
 function snap() {
+	//draw video to canvas
 	context.drawImage(video, 0, 0, w, h);
-	var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+	contextFullSize.drawImage(video, 0, 0, wFull, hFull);
+	var dataURL = canvasFullSize.toDataURL("image/jpeg", 1.0);
 	downloadImage(dataURL, "microscope.jpeg");
 }
 
@@ -112,23 +139,29 @@ function addDevice() {
 			ledButton.id = "ledChangeState" + deviceID.toString();
 			ledButton.setAttribute("onClick", "changeLEDState(this)");
 			ledButton.innerText = "Turn On/Off";
+			let removeButton = document.createElement("button");
+			removeButton.className = "button";
+			removeButton.id = "ledDelete" + deviceID.toString();
+			removeButton.setAttribute("onClick", "removeDevice(this)");
+			removeButton.innerText = "X";
 			controlls[0].appendChild(ledDiv);
 			ledDiv.appendChild(ledText);
 			ledDiv.appendChild(ledID);
 			ledDiv.appendChild(ledButton);
+			ledDiv.appendChild(removeButton);
 			//increment deviceID for next device
 			deviceID++;
 		}
 	}
-	//if its a motor send the data to backend
-	if(document.getElementById("selectDevice").value == "Motor"){
+	//if its a motorULN2003 send the data to backend
+	if(document.getElementById("selectDevice").value == "MotorULN2003"){
 		let pin1 = document.getElementById("motorPinInput1").value;
 		let pin2 = document.getElementById("motorPinInput2").value;
 		let pin3 = document.getElementById("motorPinInput3").value;
 		let pin4 = document.getElementById("motorPinInput4").value;
 		//send a post request, that adds a device to the backend
 		if(pin1 != "" && pin2 != "" && pin3 != "" && pin4 != ""){
-			fetch("/post/add/Motor", {
+			fetch("/post/add/Motor/ULN2003", {
 				method: "POST",
 				body: deviceID.toString() + "," + pin1.toString() + "," + pin2.toString() + "," + pin3.toString() + "," + pin4.toString()
 			}).then(res => {
@@ -149,21 +182,84 @@ function addDevice() {
 			let motorButton = document.createElement("button");
 			motorButton.className = "button";
 			motorButton.id = "motorChangeState" + deviceID.toString();
-			motorButton.setAttribute("onClick", "changeMotorState(this)");
+			motorButton.setAttribute("onClick", "changeMotorStateULN2003(this)");
 			motorButton.innerText = "Send";
+			let removeButton = document.createElement("button");
+			removeButton.className = "button";
+			removeButton.id = "motorDelete" + deviceID.toString();
+			removeButton.setAttribute("onClick", "removeDevice(this)");
+			removeButton.innerText = "X";
 			controlls[0].appendChild(motorDiv);
 			motorDiv.appendChild(motorText);
 			motorDiv.appendChild(motorID);
 			motorDiv.appendChild(motorStepInput);
 			motorDiv.appendChild(motorButton);
+			motorDiv.appendChild(removeButton);
 
 			//increment deviceID for next device
 			deviceID++;
 		}
 	}
+
+	if(document.getElementById("selectDevice").value == "MotorDRV8825"){
+		let pin1 = document.getElementById("motorPinInput1").value;
+		let pin2 = document.getElementById("motorPinInput2").value;
+		//send a post request, that adds a device to the backend
+		if(pin1 != "" && pin2 != ""){
+			fetch("/post/add/Motor/DRV8825", {
+				method: "POST",
+				body: deviceID.toString() + "," + pin1.toString() + "," + pin2.toString()
+			}).then(res => {
+				console.log("Post request complete! response:" + res);
+			});
+			//add controll element to controll section
+			let controlls = document.getElementsByClassName("controlls");
+			let motorDiv = document.createElement("div");
+			motorDiv.className = "centered";
+			let motorText = document.createElement("p");
+			motorText.className = "motorParagraph";
+			motorText.innerText = "Motor - " + "ID:";
+			let motorID = document.createElement("p");
+			motorID.className = "motorID";
+			motorID.innerText = deviceID.toString();
+			let motorStepInput = document.createElement("input");
+			motorStepInput.className = "motorStepInput";
+			let motorButton = document.createElement("button");
+			motorButton.className = "button";
+			motorButton.id = "motorChangeState" + deviceID.toString();
+			motorButton.setAttribute("onClick", "changeMotorStateDRV8825(this)");
+			motorButton.innerText = "Send";
+			let removeButton = document.createElement("button");
+			removeButton.className = "button";
+			removeButton.id = "motorDelete" + deviceID.toString();
+			removeButton.setAttribute("onClick", "removeDevice(this)");
+			removeButton.innerText = "X";
+			controlls[0].appendChild(motorDiv);
+			motorDiv.appendChild(motorText);
+			motorDiv.appendChild(motorID);
+			motorDiv.appendChild(motorStepInput);
+			motorDiv.appendChild(motorButton);
+			motorDiv.appendChild(removeButton);
+
+			//increment deviceID for next device
+			deviceID++;
+		}
+	}
+
 	//close popup window
 	let popupAdd = document.getElementById("addDevice").closest(".addPopup");
 	closePopup(popupAdd);
+}
+
+function removeDevice(_button) {
+	let id = _button.closest("div").children[1].innerText;
+	fetch("/post/delete", {
+		method: "POST",
+		body: id
+	}).then(res => {
+		console.log("Post request complete! response:", res)
+	});
+	let deviceDiv = _button.closest("div").remove();
 }
 
 //sends a POST request to the server, that changes the state of a LED
@@ -178,10 +274,22 @@ function changeLEDState(_button) {
 }
 
 //sends a Post request to the server, that changes the state of a Motor
-function changeMotorState(_button) {
+function changeMotorStateULN2003(_button) {
 	let id = _button.closest("div").children[1].innerText;
 	let steps = _button.closest("div").children[2].value;
-	fetch("/post/change/Motor", {
+	fetch("/post/change/Motor/ULN2003", {
+		method: "POST",
+		body: id + "," + steps.toString()
+	}).then(res => {
+		console.log("Post request complete! response:", res)
+	});
+}
+
+//sends a Post request to the server, that changes the state of a Motor
+function changeMotorStateDRV8825(_button) {
+	let id = _button.closest("div").children[1].innerText;
+	let steps = _button.closest("div").children[2].value;
+	fetch("/post/change/Motor/DRV8825", {
 		method: "POST",
 		body: id + "," + steps.toString()
 	}).then(res => {
@@ -207,7 +315,7 @@ function displayPinInputs(){
 		input.id = "ledPinInput1";
 		pinInputs.appendChild(device);
 		device.appendChild(input);
-	} else if(document.getElementById("selectDevice").value == "Motor"){
+	} else if(document.getElementById("selectDevice").value == "MotorULN2003"){
 		//remove all pin inputs then add 4 new one for a motor
 		var child = pinInputs.lastElementChild;
 		while(child){
@@ -245,5 +353,29 @@ function displayPinInputs(){
 		device.appendChild(div2);
 		device.appendChild(div3);
 		device.appendChild(div4);
+	} else if(document.getElementById("selectDevice").value == "MotorDRV8825"){
+		//remove all pin inputs then add 2 new one for a motor
+		var child = pinInputs.lastElementChild;
+		while(child){
+			pinInputs.removeChild(child);
+			child = pinInputs.lastElementChild;
+		}
+		let device = document.createElement("div");
+		device.className = "block";
+		let divDir = document.createElement("div");
+		divDir.className = "centered";
+		let inputDir = document.createElement("input");
+		inputDir.className = "pinInput";
+		inputDir.id = "motorPinInput1";	
+		let divStep = document.createElement("div");
+		divStep.className = "centered";
+		let inputStep = document.createElement("input");
+		inputStep.className = "pinInput";
+		inputStep.id = "motorPinInput2";
+		pinInputs.appendChild(device);
+		divDir.appendChild(inputDir);
+		divStep.appendChild(inputStep);
+		device.appendChild(divDir);
+		device.appendChild(divStep);
 	}
 }

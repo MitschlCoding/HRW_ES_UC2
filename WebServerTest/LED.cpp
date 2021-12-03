@@ -1,6 +1,6 @@
 #include "LED.h"
 
-uc2::LED::LED(int _id, char _pinNum): ODevice(_id, _pinNum){
+uc2::LED::LED(int _id, char _pinNum): ODevice(_id, 1){
   uc2::Pin ledPin = uc2::Pin(_pinNum, true);
   this->setPin(0,ledPin);
 }

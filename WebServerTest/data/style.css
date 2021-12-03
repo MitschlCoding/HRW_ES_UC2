@@ -10,11 +10,27 @@ body{
     border: solid 8px steelblue;
     margin: 5px;
     }
+#videoFullSize{
+    border-radius: 20px;
+    overflow: hidden;
+    border: solid 8px steelblue;
+    margin: 5px;
+    opacity: 0;
+    position: absolute; right:0; top:0;
+    }
 #snapShotCanvas{
     border-radius: 20px;
     overflow: hidden;
     border: solid 8px steelblue;
     margin: 5px;
+    }
+#canvasFullSize{
+    border-radius: 20px;
+    overflow: hidden;
+    border: solid 8px steelblue;
+    margin: 5px;
+    opacity: 0;
+    position: absolute; right:0; top:0;
     }
 .navigation{
     background-color: #121212;
@@ -95,7 +111,7 @@ body{
     }
 .dropdown {
       position: relative;
-    font-family: "Lucida Console";
+      font-family: "Lucida Console";
       display: inline-block;
     }
 .dropdown-content {

@@ -10,7 +10,8 @@
 //System for IODevices
 #include "IOController.h"
 #include "LED.h"
-#include "Motor.h"
+#include "MotorULN2003.h"
+#include "MotorDRV8825.h"
 
 using namespace httpsserver;
 
@@ -103,10 +104,11 @@ void setup(){
     id = atoi(buff);
     uc2::LED* ledTemp = (uc2::LED*)ioContrTest->getODevice(id);
     ledTemp->turnOnOff();
+    delete buff;
   });
 
   //resource node, for a POST request, to add a Motor
-  ResourceNode* nodeAddMotor = new ResourceNode("/post/add/Motor", "POST", [](HTTPRequest* req, HTTPResponse* res){
+  ResourceNode* nodeAddMotorULN2003 = new ResourceNode("/post/add/Motor/ULN2003", "POST", [](HTTPRequest* req, HTTPResponse* res){
     size_t bodyLength = req->getContentLength();
     char* buff = new char[bodyLength+1];
     buff[bodyLength] = '\0';
@@ -121,14 +123,14 @@ void setup(){
       ptr = strtok(NULL, ",");
       pins[i] = atoi(ptr);
     }
-    ioContrTest->addODevice(new uc2::Motor(id, pins[0], pins[1], pins[2], pins[3]));
+    ioContrTest->addODevice(new uc2::MotorULN2003(id, pins[0], pins[1], pins[2], pins[3]));
     //init device
     ioContrTest->getODevice(id)->deviceInit();
     delete buff;
     delete pins;
   });
 
-  ResourceNode* nodeChangeMotorState = new ResourceNode("/post/change/Motor", "POST", [](HTTPRequest* req, HTTPResponse* res){
+  ResourceNode* nodeChangeMotorStateULN2003 = new ResourceNode("/post/change/Motor/ULN2003", "POST", [](HTTPRequest* req, HTTPResponse* res){
     size_t bodyLength = req->getContentLength();
     char* buff = new char[bodyLength+1];
     buff[bodyLength] = '\0';
@@ -137,8 +139,54 @@ void setup(){
     int id = atoi(buff);
     ptr = strtok(NULL, ",");
     int _steps = atoi(ptr);
-    uc2::Motor* motorTemp = (uc2::Motor*)ioContrTest->getODevice(id);
+    uc2::MotorULN2003* motorTemp = (uc2::MotorULN2003*)ioContrTest->getODevice(id);
     motorTemp->steps = _steps;
+  });
+
+  //resource node, for a POST request, to add a Motor
+  ResourceNode* nodeAddMotorDRV8825 = new ResourceNode("/post/add/Motor/DRV8825", "POST", [](HTTPRequest* req, HTTPResponse* res){
+    size_t bodyLength = req->getContentLength();
+    char* buff = new char[bodyLength+1];
+    buff[bodyLength] = '\0';
+    req->readChars(buff, bodyLength);
+    int id;
+    int* pins = new int[2];
+    //set id
+    id = atoi(buff);
+    //go through all elements in the string with a string token and push them into pins
+    char* ptr = strtok(buff, ",");
+    for(size_t i = 0; i < 2; i++){
+      ptr = strtok(NULL, ",");
+      pins[i] = atoi(ptr);
+    }
+    ioContrTest->addODevice(new uc2::MotorDRV8825(id, pins[0], pins[1]));
+    //init device
+    ioContrTest->getODevice(id)->deviceInit();
+    delete buff;
+    delete pins;
+  });
+
+  ResourceNode* nodeChangeMotorStateDRV8825 = new ResourceNode("/post/change/Motor/DRV8825", "POST", [](HTTPRequest* req, HTTPResponse* res){
+    size_t bodyLength = req->getContentLength();
+    char* buff = new char[bodyLength+1];
+    buff[bodyLength] = '\0';
+    req->readChars(buff, bodyLength);
+    char* ptr = strtok(buff, ",");
+    int id = atoi(buff);
+    ptr = strtok(NULL, ",");
+    int _steps = atoi(ptr);
+    uc2::MotorDRV8825* motorTemp = (uc2::MotorDRV8825*)ioContrTest->getODevice(id);
+    motorTemp->steps = _steps;
+  });
+
+  ResourceNode* nodeDeleteDevice = new ResourceNode("/post/delete", "POST", [](HTTPRequest* req, HTTPResponse* res){
+    size_t bodyLength = req->getContentLength();
+    char* buff = new char[bodyLength+1];
+    buff[bodyLength] = '\0';
+    req->readChars(buff, bodyLength);
+    int id;
+    id = atoi(buff);
+    ioContrTest->removeODevice(id);
   });
 
   //initialise node for server, start the server and test if its running
@@ -147,8 +195,11 @@ void setup(){
   secureServer->registerNode(nodeJS);
   secureServer->registerNode(nodeAddLED);
   secureServer->registerNode(nodeChangeLEDState);
-  secureServer->registerNode(nodeAddMotor);
-  secureServer->registerNode(nodeChangeMotorState);
+  secureServer->registerNode(nodeAddMotorULN2003);
+  secureServer->registerNode(nodeChangeMotorStateULN2003);
+  secureServer->registerNode(nodeAddMotorDRV8825);
+  secureServer->registerNode(nodeChangeMotorStateDRV8825);
+  secureServer->registerNode(nodeDeleteDevice);
   secureServer->start();
   if(secureServer->isRunning()){
     Serial.println("Ready");
