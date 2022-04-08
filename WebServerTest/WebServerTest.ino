@@ -5,6 +5,8 @@
 //work with http requests and response
 #include <HTTPRequest.hpp>
 #include <HTTPResponse.hpp>
+//Json parsing and serialisation
+#include <ArduinoJson.h>
 //file system
 #include <SPIFFS.h>
 //System for IODevices
@@ -15,7 +17,7 @@
 
 using namespace httpsserver;
 
-const char* ssid = "UC2-Microscope";
+const char* ssid = "Modular-UC2";
 const char* password = "1234567890";
 
 //initialise a sertificate and an https server
@@ -100,8 +102,13 @@ void setup(){
     char* buff = new char[bodyLength+1];
     buff[bodyLength] = '\0';
     req->readChars(buff, bodyLength);
-    int id;
-    id = atoi(buff);
+    StaticJsonDocument<200> jsonDoc;
+    DeserializationError error = deserializeJson(jsonDoc, buff);
+    if(error){
+      Serial.println(error.f_str());
+      return;
+    }
+    int id = jsonDoc["id"];
     uc2::LED* ledTemp = (uc2::LED*)ioContrTest->getODevice(id);
     ledTemp->turnOnOff();
     delete buff;
@@ -135,12 +142,17 @@ void setup(){
     char* buff = new char[bodyLength+1];
     buff[bodyLength] = '\0';
     req->readChars(buff, bodyLength);
-    char* ptr = strtok(buff, ",");
-    int id = atoi(buff);
-    ptr = strtok(NULL, ",");
-    int _steps = atoi(ptr);
+    StaticJsonDocument<200> jsonDoc;
+    DeserializationError error = deserializeJson(jsonDoc, buff);
+    if(error){
+      Serial.println(error.f_str());
+      return;
+    }
+    int id = jsonDoc["id"];
+    int steps = jsonDoc["steps"];
     uc2::MotorULN2003* motorTemp = (uc2::MotorULN2003*)ioContrTest->getODevice(id);
-    motorTemp->steps = _steps;
+    motorTemp->steps = steps;
+    delete buff;
   });
 
   //resource node, for a POST request, to add a Motor
@@ -177,6 +189,7 @@ void setup(){
     int _steps = atoi(ptr);
     uc2::MotorDRV8825* motorTemp = (uc2::MotorDRV8825*)ioContrTest->getODevice(id);
     motorTemp->steps = _steps;
+    delete buff;
   });
 
   ResourceNode* nodeDeleteDevice = new ResourceNode("/post/delete", "POST", [](HTTPRequest* req, HTTPResponse* res){
@@ -187,6 +200,24 @@ void setup(){
     int id;
     id = atoi(buff);
     ioContrTest->removeODevice(id);
+    delete buff;
+  });
+
+  ResourceNode* nodeGetDevices = new ResourceNode("/get/devices", "GET", [](HTTPRequest* req, HTTPResponse* res){
+    DynamicJsonDocument doc(1024);
+    String jsonDevices = "{\"devices\": [";
+    bool first = true;
+    for(auto i: ioContrTest->oDevices){
+      if(!first){
+        jsonDevices += ",";
+      } else {
+        first = false;
+      }
+      jsonDevices += "{\"id\":" + String(i->id) + ", \"type\":\"" + i->type + "\"}";
+    }
+    jsonDevices += "]}";
+    Serial.println(jsonDevices);
+    res->print(jsonDevices);
   });
 
   //initialise node for server, start the server and test if its running
@@ -200,6 +231,7 @@ void setup(){
   secureServer->registerNode(nodeAddMotorDRV8825);
   secureServer->registerNode(nodeChangeMotorStateDRV8825);
   secureServer->registerNode(nodeDeleteDevice);
+  secureServer->registerNode(nodeGetDevices);
   secureServer->start();
   if(secureServer->isRunning()){
     Serial.println("Ready");

@@ -3,6 +3,7 @@
 uc2::LED::LED(int _id, char _pinNum): ODevice(_id, 1){
   uc2::Pin ledPin = uc2::Pin(_pinNum, true);
   this->setPin(0,ledPin);
+  this->type = "LED";
 }
 
 void uc2::LED::deviceInit(){

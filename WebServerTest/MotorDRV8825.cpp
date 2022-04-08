@@ -5,6 +5,7 @@ uc2::MotorDRV8825::MotorDRV8825(int _id, int _pin1, int _pin2) : ODevice(_id, 2)
   uc2::Pin pin2 = uc2::Pin(_pin2, true);
   this->setPin(0, pin1);
   this->setPin(1, pin2);
+  this->type = "MotorDRV8825";
 }
 
 void uc2::MotorDRV8825::deviceInit(){

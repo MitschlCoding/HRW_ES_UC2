@@ -20,6 +20,7 @@ namespace uc2{
       Pin* getPin(char _pinIndex);
       //the id of the Device for identification
       int id;
+      String type;
     private:
       char numOfPins;
       Pin* pins;

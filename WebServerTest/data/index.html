@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset='utf-8'>
-		<title>Microscope</title>
+		<title>Modular-UC2</title>
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
@@ -40,7 +40,7 @@
 			<!--navigation Header-->
 			<div class="navigation">
 				<div class="centered">
-					<p><h1>Microscope Test</h1></p>
+					<h1>Modular-UC2</h1></p>
 				</div>
 				<div class="dropdown">
 					<button class="dropDownButton">ProjektGruppen</button>
@@ -49,6 +49,11 @@
 					<a href="http://fablab.hochschule-ruhr-west.de/content/index_ger.html" target="_blank">FabLab</a>
 					</div>
 				</div> 
+				<div id="cameraControlls">
+					<button class="button" id="showCam" onClick="showCam()">Camera</button>
+					<button id="snap" class="button" onclick="snap()">Take Screenshot</button>
+					<button class="button" id="help" onclick="showHelp()">Help</button>
+				</div>
 			</div>
 			<!--Body of the main page-->
 			<div class="content">
@@ -62,6 +67,7 @@
 					</div>
 				</div>
 				<!--Video and Screenshots-->
+				<!--
 				<div class="videoContent">
 					<div class="centered">
 						<h2>Video</h2>
@@ -78,6 +84,7 @@
 						<canvas id="snapShotCanvas"></canvas>
 					</div>
 				</div>
+			-->
 				<!--some information on the projekt-->
 				<div class="informationContent">
 					<div class="textJustified">
@@ -85,7 +92,7 @@
 							<p><h2>Information</h2></p>
 						</div>
 						<div>
-							<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,</p>
+							<p>You can toggle the Camera in the top right hand corner with the camera button. You can take screenshots of what you see with the button beside it. If you want to add a device to your microscop. For example a LED, press the add Device Button on the right and you follow the instructions. To hide or show this information: press the help button on the top right.</p>
 						</div>
 					</div>
 				</div>
