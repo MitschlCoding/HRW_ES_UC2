@@ -51,7 +51,8 @@
 				</div> 
 				<div id="cameraControlls">
 					<button class="button" id="showCam" onClick="showCam()">Camera</button>
-					<button id="snap" class="button" onclick="snap()">Take Screenshot</button>
+					<button id="snap" class="button" onclick="snap()">Screenshot</button>
+					<button class="button" id="showCode" onclick="showCode()">Code</button>
 					<button class="button" id="help" onclick="showHelp()">Help</button>
 				</div>
 			</div>
@@ -92,13 +93,15 @@
 							<p><h2>Information</h2></p>
 						</div>
 						<div>
-							<p>You can toggle the Camera in the top right hand corner with the camera button. You can take screenshots of what you see with the button beside it. If you want to add a device to your microscop. For example a LED, press the add Device Button on the right and you follow the instructions. To hide or show this information: press the help button on the top right.</p>
+							<p>You can toggle the Camera in the top right hand corner with the camera button. You can take screenshots of what you see with the button beside it. If you want to add a device to your microscop. For example a LED: press the add Device Button on the right and you follow the instructions. You can also write small scripts to run easy tasks on the microskope, to open the script field press the code button on the top right. To hide or show this information: press the help button on the top right.</p>
 						</div>
 					</div>
 				</div>
 			</div>
 			<video autoplay="true" id="videoFullSize"></video>
 			<canvas id="canvasFullSize"></canvas>
+			<textarea id="codeFullSize"></textarea>
+			<button class="button" id="runCode" onclick="interpretCode()">run</button>
 		</div>
 		
 		<script src="index.js"></script>

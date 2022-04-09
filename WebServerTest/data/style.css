@@ -21,6 +21,27 @@ body {
   height: 100%;
   z-index: -1;
 }
+#codeFullSize {
+  display: none;
+  overflow: hidden;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 1em;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 90%;
+  height: 90%;
+  z-index: -1;
+  resize: none;
+  font-size: 2em;
+}
+#runCode {
+  position: absolute;
+  left: 80%;
+  top: 80%;
+  z-index: 2;
+}
 #cameraControlls {
   font-size: 1em;
   z-index: 3;

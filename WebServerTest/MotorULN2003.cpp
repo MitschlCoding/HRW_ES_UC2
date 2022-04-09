@@ -6,8 +6,8 @@ uc2::MotorULN2003::MotorULN2003(int _id, int _pin1, int _pin2, int _pin3, int _p
 }
 
 void uc2::MotorULN2003::deviceInit(){
-  stepper.setSpeedInStepsPerSecond(1024/2);
-  stepper.setAccelerationInStepsPerSecondPerSecond(1024/2);
+  stepper.setSpeedInStepsPerSecond(1024/4);
+  stepper.setAccelerationInStepsPerSecondPerSecond(1024/4);
 }
 
 void uc2::MotorULN2003::deviceUpdate(){

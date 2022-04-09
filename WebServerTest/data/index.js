@@ -1,12 +1,12 @@
 //id for devices
 let deviceID = 0;
 
-//video constraints
+//video constraints and dom stuff
 let constraints = {
   video: { width: window.innerWidth / 2, facingMode: 'environment' },
 };
 let constraintsFullSize = { video: { width: 1920, facingMode: 'environment' } };
-//let video = document.getElementById('liveVideo');
+const codeInput = document.getElementById('codeFullSize');
 let videoFullSize = document.getElementById('videoFullSize');
 let canvas = document.querySelector('canvas');
 let canvasFullSize = document.getElementById('canvasFullSize');
@@ -74,22 +74,39 @@ function closePopup(popup) {
   overlay.classList.remove('active');
 }
 
+//open/hide the camera in fullscreen
 function showCam() {
   if (videoFullSize.style.display == 'none') {
     videoFullSize.style.display = 'block';
+    codeInput.style.display = 'none';
     videoFullSize.style.zIndex = 1;
+    codeInput.style.zIndex = -1;
   } else {
     videoFullSize.style.display = 'none';
     videoFullSize.style.zIndex = -1;
   }
 }
 
+//shows/hides the help page
 function showHelp() {
   const help = document.getElementsByClassName('informationContent')[0];
   if (help.style.display == 'block') {
     help.style.display = 'none';
   } else {
     help.style.display = 'block';
+  }
+}
+
+//shows/hides the code field
+function showCode() {
+  if (codeInput.style.display == 'none') {
+    codeInput.style.display = 'block';
+    codeInput.style.zIndex = 1;
+    videoFullSize.style.display = 'none';
+    videoFullSize.style.zIndex = -1;
+  } else {
+    codeInput.style.display = 'none';
+    codeInput.style.zIndex = -1;
   }
 }
 
@@ -163,6 +180,7 @@ function downloadImage(data, filename = 'untilted.jpeg') {
   a.click();
 }
 
+//add a led controll pannel for a given id
 function addLEDElement(id) {
   let controlls = document.getElementsByClassName('controlls');
   let ledDiv = document.createElement('div');
@@ -190,6 +208,7 @@ function addLEDElement(id) {
   ledDiv.appendChild(removeButton);
 }
 
+//add a motor controll pannel for a given id
 function addMotorElement(id) {
   let controlls = document.getElementsByClassName('controlls');
   let motorDiv = document.createElement('div');
@@ -295,6 +314,7 @@ function addDevice() {
   closePopup(popupAdd);
 }
 
+//sends a fetch request to the backend that deletes a device
 function removeDevice(_button) {
   let id = _button.closest('div').children[1].innerText;
   fetch('/post/delete', {
@@ -341,7 +361,7 @@ function changeMotorStateDRV8825(_button) {
   });
 }
 
-//changes the displayed number of Pins based on the selected device
+//changes the displayed number of Pins based on the selected device in addDevice popup
 function displayPinInputs() {
   let pinInputs = document.getElementById('devicePins');
   if (document.getElementById('selectDevice').value == 'LED') {
@@ -420,5 +440,146 @@ function displayPinInputs() {
     divStep.appendChild(inputStep);
     device.appendChild(divDir);
     device.appendChild(divStep);
+  }
+}
+
+async function interpretCode() {
+  var code = codeInput.value;
+
+  var codeBlocks = findAndSplitRepeats(code);
+  var codeBlocksSplit = splitCodeBlocksByLine(codeBlocks);
+
+  console.log(codeBlocksSplit);
+
+  for (var i = 0; i < codeBlocksSplit.length; i++) {
+    if (codeBlocksSplit[i].length == 1) {
+      var command = codeBlocksSplit[i][0];
+      await runCommand(command);
+    } else if (codeBlocksSplit[i][0].substring(0, 6) == 'repeat') {
+      console.log('CUMM');
+      var repeat = codeBlocksSplit[i][0];
+      const valueInputStart = repeat.search(/\(/);
+      const valueInputEnd = repeat.search(/\)/);
+      const valueInput = repeat.substring(valueInputStart + 1, valueInputEnd);
+      console.log('repeat');
+      for (var j = 0; j < valueInput; j++) {
+        for (var k = 1; k < codeBlocksSplit[i].length - 1; k++) {
+          console.log(codeBlocksSplit[i][k]);
+          await runCommand(codeBlocksSplit[i][k]);
+        }
+      }
+    }
+  }
+}
+
+function findAndSplitRepeats(string) {
+  var stringBlocks = [];
+  var tempStr = string;
+
+  if (tempStr.search('repeat') == -1) {
+    return [tempStr];
+  }
+
+  while (tempStr.search('repeat') != -1) {
+    const whileIndex = tempStr.search('repeat');
+    tempStr
+      .substring(0, whileIndex)
+      .split('\n')
+      .forEach((strSplit) => stringBlocks.push(strSplit));
+    const endIndex = tempStr.search('end\n');
+    stringBlocks.push(tempStr.substring(whileIndex, endIndex + 4));
+    tempStr = tempStr.substring(endIndex + 4);
+  }
+  stringBlocks.push(tempStr);
+  return stringBlocks;
+}
+
+function splitCodeBlocksByLine(stringArray) {
+  if (stringArray.length == 1) {
+    return stringArray[0].split('\n').map((str) => [str]);
+  }
+  var splitStringArray = stringArray.map((string) => string.split('\n'));
+  splitStringArray = splitStringArray.map((array) =>
+    array.filter((str) => str)
+  );
+  splitStringArray = splitStringArray.filter((array) => array.length > 0);
+  return splitStringArray;
+}
+
+function delay(delayInSec) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(2);
+    }, delayInSec * 1000);
+  });
+}
+
+async function runCommand(command) {
+  if (command.substring(0, 7) == 'picture') {
+    console.log('foto');
+  } else if (command.substring(0, 3) == 'led') {
+    const deviceIdInputStart = command.search(/\(/);
+    const deviceIdInputEnd = command.search(/\)/);
+    const deviceIdInput = command.substring(
+      deviceIdInputStart + 1,
+      deviceIdInputEnd
+    );
+    console.log('led: ' + deviceIdInput);
+    fetch('/post/change/LED', {
+      method: 'POST',
+      body: JSON.stringify({ id: deviceIdInput }),
+    }).then((res) => {
+      console.log('Post request complete! response:', res);
+    });
+  } else if (command.substring(0, 8) == 'motorULN') {
+    const deviceIdInputStart = command.search(/\(/);
+    const deviceIdInputEnd = command.search(/\)/);
+    const deviceIdInput = command.substring(
+      deviceIdInputStart + 1,
+      deviceIdInputEnd
+    );
+    command = command.substring(deviceIdInputEnd + 1);
+
+    const valueInputStart = command.search(/\(/);
+    const valueInputEnd = command.search(/\)/);
+    const valueInput = command.substring(valueInputStart + 1, valueInputEnd);
+    console.log(
+      'motorULN: DeviceID: ' + deviceIdInput + '\nValue: ' + valueInput
+    );
+    fetch('/post/change/Motor/ULN2003', {
+      method: 'POST',
+      body: JSON.stringify({ id: deviceIdInput, steps: valueInput }),
+    }).then((res) => {
+      console.log('Post request complete! response:', res);
+    });
+  } else if (command.substring(0, 8) == 'motorDRV') {
+    const deviceIdInputStart = command.search(/\(/);
+    const deviceIdInputEnd = command.search(/\)/);
+    const deviceIdInput = command.substring(
+      deviceIdInputStart + 1,
+      deviceIdInputEnd
+    );
+    command = command.substring(deviceIdInputEnd + 1);
+
+    const valueInputStart = command.search(/\(/);
+    const valueInputEnd = command.search(/\)/);
+    const valueInput = command.substring(valueInputStart + 1, valueInputEnd);
+
+    console.log(
+      'MotorDRV DeviceID: ' + deviceIdInput + '\nValue: ' + valueInput
+    );
+    fetch('/post/change/Motor/DRV8825', {
+      method: 'POST',
+      body: deviceIdInput + ',' + valueInput,
+    }).then((res) => {
+      console.log('Post request complete! response:', res);
+    });
+  } else if (command.substring(0, 4) == 'wait') {
+    const valueInputStart = command.search(/\(/);
+    const valueInputEnd = command.search(/\)/);
+    const valueInput = command.substring(valueInputStart + 1, valueInputEnd);
+    console.log('waiting');
+    await delay(parseInt(valueInput));
+    console.log('resume');
   }
 }
