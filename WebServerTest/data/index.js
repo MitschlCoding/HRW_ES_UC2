@@ -457,7 +457,6 @@ async function interpretCode() {
       var command = codeBlocksSplit[i][0];
       await runCommand(command);
     } else if (codeBlocksSplit[i][0].substring(0, 6) == 'repeat') {
-      console.log('CUMM');
       var repeat = codeBlocksSplit[i][0];
       const valueInputStart = repeat.search(/\(/);
       const valueInputEnd = repeat.search(/\)/);
@@ -465,7 +464,6 @@ async function interpretCode() {
       console.log('repeat');
       for (var j = 0; j < valueInput; j++) {
         for (var k = 1; k < codeBlocksSplit[i].length - 1; k++) {
-          console.log(codeBlocksSplit[i][k]);
           await runCommand(codeBlocksSplit[i][k]);
         }
       }
@@ -522,6 +520,7 @@ function delay(delayInSec) {
 async function runCommand(command) {
   if (command.substring(0, 7) == 'picture') {
     console.log('foto');
+    snap();
   } else if (command.substring(0, 3) == 'led') {
     const deviceIdInputStart = command.search(/\(/);
     const deviceIdInputEnd = command.search(/\)/);
