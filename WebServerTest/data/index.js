@@ -443,6 +443,7 @@ function displayPinInputs() {
   }
 }
 
+//interprets the code that is given
 async function interpretCode() {
   var code = codeInput.value;
 
@@ -472,6 +473,7 @@ async function interpretCode() {
   }
 }
 
+//splits the code string into blocks (for example a repeat block)
 function findAndSplitRepeats(string) {
   var stringBlocks = [];
   var tempStr = string;
@@ -494,6 +496,7 @@ function findAndSplitRepeats(string) {
   return stringBlocks;
 }
 
+//takes a code block (for example a repeat block) and splits it at \n
 function splitCodeBlocksByLine(stringArray) {
   if (stringArray.length == 1) {
     return stringArray[0].split('\n').map((str) => [str]);
@@ -506,6 +509,7 @@ function splitCodeBlocksByLine(stringArray) {
   return splitStringArray;
 }
 
+//returns a promis, that is resolved after x seconds
 function delay(delayInSec) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -514,6 +518,7 @@ function delay(delayInSec) {
   });
 }
 
+//takes a string and interprets it into a command that is send to the backend
 async function runCommand(command) {
   if (command.substring(0, 7) == 'picture') {
     console.log('foto');
