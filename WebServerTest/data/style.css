@@ -39,8 +39,9 @@ body {
 #runCode {
   position: absolute;
   left: 80%;
-  top: 80%;
-  z-index: 2;
+  top: 82%;
+  z-index: -1;
+  display: none;
 }
 #cameraControlls {
   font-size: 1em;
@@ -95,7 +96,7 @@ body {
   margin-bottom: 0px;
   font-size: 1.2em;
   width: 30%;
-  z-index: 3;
+  z-index: 2;
 }
 .centered {
   display: flex;

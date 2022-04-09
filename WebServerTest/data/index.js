@@ -99,7 +99,10 @@ function showHelp() {
 
 //shows/hides the code field
 function showCode() {
+  const runButton = document.getElementById('runCode');
   if (codeInput.style.display == 'none') {
+    runButton.style.display = 'block';
+    runButton.style.zIndex = 3;
     codeInput.style.display = 'block';
     codeInput.style.zIndex = 1;
     videoFullSize.style.display = 'none';
@@ -107,6 +110,8 @@ function showCode() {
   } else {
     codeInput.style.display = 'none';
     codeInput.style.zIndex = -1;
+    runButton.style.display = 'none';
+    runButton.style.zIndex = -1;
   }
 }
 
