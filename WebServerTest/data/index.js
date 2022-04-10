@@ -452,7 +452,7 @@ var stack = {};
 
 async function runCode() {
   var code = codeInput.value;
-  interpretCode(code);
+  await interpretCode(code);
   stack = {};
 }
 
@@ -512,6 +512,7 @@ async function findAndSplitRepeats(string) {
       stringBlocks.push(str);
     }
   });
+  console.log(stringBlocks);
   return stringBlocks;
 }
 
@@ -633,7 +634,6 @@ async function runCommand(command) {
     const valueStart = command.search(/\=/);
     const name = command.substring(4, valueStart - 1);
     var value = command.substring(valueStart + 2);
-    console.log(value);
     value = value.split(' ').map((str) => {
       if (stack[str] != undefined) {
         return stack[str];
@@ -641,10 +641,11 @@ async function runCommand(command) {
         return str;
       }
     });
-    console.log(value);
     value = value.join(' ');
-    console.log(value);
     stack[name] = eval(value);
+  } else if (command.substring(0, 7) == 'delete ') {
+    var name = command.substring(7);
+    delete stack[name];
   } else if (command.substring(0, 4) == 'log(') {
     const valueInputStart = command.search(/\(/);
     var value = command.substring(valueInputStart + 1, command.length - 1);
