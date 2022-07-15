@@ -448,8 +448,10 @@ function displayPinInputs() {
   }
 }
 
+//saves the variables that are used in the users code
 var stack = {};
 
+//reads the code and starts to interpret it
 async function runCode() {
   var code = codeInput.value;
   await interpretCode(code);
@@ -476,7 +478,7 @@ async function findAndSplitRepeats(string) {
   }
 
   while (true) {
-    const whileIndex = tempStr.search(/repeat|if\(/);
+    const whileIndex = tempStr.search(/repeat\(|if\(/);
     tempStr
       .substring(0, whileIndex)
       .split('\n')
@@ -495,15 +497,15 @@ async function findAndSplitRepeats(string) {
       ) {
         break;
       }
-      if (tempStr.substring(tempWhileIndex + 6).search(/repeat|if\(/) != -1) {
+      if (tempStr.substring(tempWhileIndex + 6).search(/repeat\(|if\(/) != -1) {
         tempWhileIndex +=
-          tempStr.substring(tempWhileIndex + 6).search(/repeat|if\(/) + 6;
+          tempStr.substring(tempWhileIndex + 6).search(/repeat\(|if\(/) + 6;
       }
       tempEndIndex += tempStr.substring(tempEndIndex + 4).search('end\n') + 4;
     }
     stringBlocks.push(tempStr.substring(whileIndex, tempEndIndex + 4));
     tempStr = tempStr.substring(tempEndIndex + 4);
-    if (tempStr.search(/repeat|if\(/) == -1) {
+    if (tempStr.search(/repeat\(|if\(/) == -1) {
       break;
     }
   }
@@ -515,26 +517,6 @@ async function findAndSplitRepeats(string) {
   console.log(stringBlocks);
   return stringBlocks;
 }
-
-/*
-owhile
-xend
-*/
-
-//takes a code block (for example a repeat block) and splits it at \n
-/*
-function splitCodeBlocksByLine(string) {
-  if (stringArray.length == 1) {
-    return stringArray[0].split('\n');
-  }
-  var splitStringArray = stringArray.map((string) => string.split('\n'));
-  splitStringArray = splitStringArray.map((array) =>
-    array.filter((str) => str)
-  );
-  splitStringArray = splitStringArray.filter((array) => array.length > 0);
-  return splitStringArray;
-}
-*/
 
 //returns a promis, that is resolved after x seconds
 function delay(delayInSec) {

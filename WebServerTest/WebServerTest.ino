@@ -49,7 +49,7 @@ void setup(){
   secureServer = new HTTPSServer(cert);
 
   //start the access Point and print the IP
-  WiFi.softAP(ssid, password, 0, 8, 1);
+  WiFi.softAP(ssid, password);
   Serial.println(WiFi.softAPIP());
 
   //create a resource node, that waits for a HTTP GET for the index page and returns the index page
